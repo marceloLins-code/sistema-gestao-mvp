@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lins.works.domain.entity.Setor;
+import com.lins.works.domain.exception.EntidadeEmUsoException;
+import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
 import com.lins.works.domain.repository.SetorRepository;
 import com.lins.works.domain.service.SetorService;
 
@@ -58,6 +62,22 @@ public class SetorController {
 				
 		return setorService.atualizarSetor(setorId, setor);
 	}
+	
+	@DeleteMapping("/{cargoId}")
+	public ResponseEntity<Setor> remover(@PathVariable Long setorId) {
+		try {
+			setorService.remover(setorId);
+			
+			return ResponseEntity.noContent().build();
+			
+		}catch (EntidadeNaoEncontradaException e) {
+			return ResponseEntity.notFound().build();
+		
+		} catch (EntidadeEmUsoException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		} 
+	}
+	
 	
 	
 	

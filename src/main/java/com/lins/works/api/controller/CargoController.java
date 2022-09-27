@@ -28,65 +28,56 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/cargos")
 public class CargoController {
-	
 
 	private CargoRepository cargoRepository;
 
-	
 	private CargoService cargoService;
-	
+
 	@GetMapping
-	public List<Cargo> buscarTodos(){
-		return cargoRepository.findAll();	
+	public List<Cargo> buscarTodos() {
+		return cargoRepository.findAll();
 	}
 
-	
-	
-	//@Transactional
+	@GetMapping("/{cargoId}")
+	public ResponseEntity<Cargo> buscar(@PathVariable Long cargoId) {
+		return cargoRepository.findById(cargoId).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+	}
+
+	@Transactional
 	@PostMapping
 	public void novoCargo(@RequestBody Cargo cargo) {
-		 cargoService.novoCargo(cargo);
+		cargoService.novoCargo(cargo);
 	}
-	
 
-	@GetMapping("/{cargpId}")
-	public ResponseEntity<Cargo> buscar(@PathVariable Long cargoId) {
-		return cargoRepository.findById(cargoId).map(ResponseEntity::ok)
-				.orElse(ResponseEntity.notFound().build());
-	}
-	
 	@Transactional
 	@PutMapping("/{cargoId}")
-	public ResponseEntity<Cargo> atualizar(@PathVariable Long cargoId,
-			@RequestBody Cargo cozinha) {
+	public ResponseEntity<Cargo> atualizar(@PathVariable Long cargoId, @RequestBody Cargo cozinha) {
 		Cargo cargoAtual = cargoRepository.getById(cargoId);
-		
+
 		if (cargoAtual != null) {
 
 			BeanUtils.copyProperties(cozinha, cargoAtual, "id");
-			
+
 			cargoAtual = cargoService.novoCargo(cargoAtual);
 			return ResponseEntity.ok(cargoAtual);
 		}
-		
+
 		return ResponseEntity.notFound().build();
 	}
-	
 
 	@DeleteMapping("/{cargoId}")
 	public ResponseEntity<Cargo> remover(@PathVariable Long cargoId) {
 		try {
-			 cargoService.remover(cargoId);
-			
+			cargoService.remover(cargoId);
+
 			return ResponseEntity.noContent().build();
-			
-		}catch (EntidadeNaoEncontradaException e) {
+
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
-		
+
 		} catch (EntidadeEmUsoException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		} 
+		}
 	}
-	
 
 }

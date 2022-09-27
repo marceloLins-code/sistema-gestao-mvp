@@ -34,10 +34,5 @@ public class Setor implements Serializable {
 	@OneToMany(mappedBy = "setor")
 	private List<Cargo> cargos = new ArrayList<>();
 	
-//	//@JsonIgnore //devido serialização
-//	@OneToMany(mappedBy = "setor")
-//	private List<Trabalhador> trabalhadores = new ArrayList<>();
-//	
-	
 
 }

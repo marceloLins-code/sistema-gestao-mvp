@@ -5,9 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,25 +21,11 @@ public class Cargo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	
 	private String nome;
 	
 
 	@ManyToOne
-	private Setor setor;
-	
-	@JsonIgnore
-	@Transient
-	public boolean isInativo(String nomeNovo ) {
-		
-		String novoNome = nomeNovo;
-		
-		return false;
-		
-	}
-	
-	
-	
-	
-	
+	private Setor setor;	
 
 }

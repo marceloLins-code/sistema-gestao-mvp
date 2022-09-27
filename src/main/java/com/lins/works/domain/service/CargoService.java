@@ -8,7 +8,6 @@ import com.lins.works.domain.entity.Cargo;
 import com.lins.works.domain.exception.EntidadeEmUsoException;
 import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
 import com.lins.works.domain.repository.CargoRepository;
-import com.lins.works.domain.repository.SetorRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -17,14 +16,13 @@ import lombok.AllArgsConstructor;
 public class CargoService {
 
 	private CargoRepository cargoRepository;
-	
-	
 
 	public Cargo novoCargo(Cargo cargo) {
 
 		boolean existCargoNome = cargoRepository.existsByNome(cargo.getNome());
 
-		boolean existCargoSetor = cargoRepository.existsByNomeContainingAndSetorId(cargo.getNome(), cargo.getSetor().getId());
+		boolean existCargoSetor = cargoRepository.existsByNomeContainingAndSetorId(cargo.getNome(),
+				cargo.getSetor().getId());
 
 		if (existCargoNome == true && existCargoSetor == false) {
 

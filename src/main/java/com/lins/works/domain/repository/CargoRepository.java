@@ -10,6 +10,11 @@ import com.lins.works.domain.entity.Cargo;
 
 @Repository
 public interface CargoRepository extends JpaRepository<Cargo, Long> {
+	
+	/*
+	 * @Query("from Cargo c join c.setor") 
+	 * List<Cargo> findAll();
+	 */
 
 	ResponseEntity<Cargo> save(Optional<Cargo> cargoAtual);	
 	

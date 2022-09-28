@@ -1,5 +1,6 @@
 package com.lins.works.domain.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ import lombok.AllArgsConstructor;
 @Service
 public class TrabalhadorService {
 
+	private static final String MSG_TRABALHADOR_NAO_ENCONTRADO =  "Setor de id %d não encontrado";
+	
+	
 	private TrabalhadorRepository trabalhadorRepository;
 
 	public Trabalhador adicionarTrabalhador(Trabalhador trabalhador) {
@@ -42,6 +46,20 @@ public class TrabalhadorService {
 			throw new EntidadeNaoEncontradaException(
 					String.format("Id de numero %d, digitado Não Existe", trabalhadorId));
 		}
+	}
+
+	public Trabalhador novoTrabalhador(Long trabalhadorId, Trabalhador trabalhador) {
+		
+		Trabalhador trabalhadorAtual = buscarOuFalhar(trabalhadorId);
+
+		BeanUtils.copyProperties(trabalhador, trabalhadorAtual, "id");
+
+		return trabalhadorRepository.save(trabalhadorAtual);
+	}
+	
+	public Trabalhador buscarOuFalhar(Long trabalhadorId) {
+		return trabalhadorRepository.findById(trabalhadorId).orElseThrow(
+				() -> new EntidadeNaoEncontradaException(String.format(MSG_TRABALHADOR_NAO_ENCONTRADO, trabalhadorId)));
 	}
 
 }

@@ -42,10 +42,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
-
-		body = Erro.builder()
-				.msg(status.getReasonPhrase())
-				.DataHora(LocalDateTime.now()).build();
+		
+		
+		if (body == null) {
+			body = Erro.builder()
+					.dataHora(LocalDateTime.now())
+					.msg(status.getReasonPhrase())
+					.build();
+		} else if (body instanceof String) {
+			body = Erro.builder()
+					.dataHora(LocalDateTime.now())
+					.msg((String) body)
+					.build();
+		}
 		
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}

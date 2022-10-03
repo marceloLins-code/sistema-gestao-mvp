@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.lins.works.domain.entity.Cargo;
 import com.lins.works.domain.entity.Trabalhador;
 import com.lins.works.domain.exception.EntidadeEmUsoException;
 import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
@@ -25,8 +26,6 @@ public class TrabalhadorService {
 
 	private TrabalhadorRepository trabalhadorRepository;
 
-	private SetorService setorService;
-
 	private CargoService cargoService;
 	
 	
@@ -34,10 +33,10 @@ public class TrabalhadorService {
 	
 	@Transactional
 	public Trabalhador adicionarTrabalhador(Trabalhador trabalhador) {
+		
+		Long cargoId = trabalhador.getCargo().getId();
 
-		setorService.buscarOuFalhar(trabalhador.getSetor().getId());
-
-		cargoService.buscarOuFalhar(trabalhador.getCargo().getId());
+		Cargo cargo = cargoService.buscarOuFalhar(cargoId);
 
 		boolean exist = trabalhadorRepository.existsByCpf(trabalhador.getCpf());
 
@@ -45,8 +44,7 @@ public class TrabalhadorService {
 			throw new RuntimeException("CPF já cadastrado");
 		}
 		
-		trabalhador.setSetor(trabalhador.getSetor());
-		trabalhador.setCargo(trabalhador.getCargo());
+		trabalhador.setCargo(cargo);
 		
 		return trabalhadorRepository.save(trabalhador);
 
@@ -67,7 +65,6 @@ public class TrabalhadorService {
 		
 		}
 	}
-
 	
 	
 	@Transactional

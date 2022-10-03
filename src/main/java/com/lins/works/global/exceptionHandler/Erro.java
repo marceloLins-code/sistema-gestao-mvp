@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class Erro {
 	
-	private LocalDateTime DataHora;
+	private LocalDateTime dataHora;
 	private String msg;	
 
 }

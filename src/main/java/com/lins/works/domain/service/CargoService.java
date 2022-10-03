@@ -29,6 +29,9 @@ public class CargoService {
 
 	public Cargo novoCargo(Cargo cargo) {	
 		
+		
+		
+		
 		boolean existCargoNome = cargoRepository.existsByNome(cargo.getNome());
 
 		boolean existCargoSetor = cargoRepository.existsByNomeContainingAndSetorId(cargo.getNome(),
@@ -38,7 +41,9 @@ public class CargoService {
 			throw new RuntimeException("Cargo nâo correspode a este setor ou setor inexistente!");
 		}
 		
+		
 		long setorId = cargo.getSetor().getId(); 		
+
 		Setor setor =setorService.buscarOuFalhar(setorId);	
 		
 		cargo.setSetor(setor);
@@ -53,15 +58,19 @@ public class CargoService {
 			cargoRepository.deleteById(cargoId);
 
 		} 
+		
+		catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(
+				String.format(CARGO_EM_USO, cargoId));
+		}
 
 		catch (EmptyResultDataAccessException e) {
 			throw new CargoNaoEncontradaException(cargoId);
 		}
-		catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException
-			(String.format(CARGO_EM_USO, cargoId));
-		}
+		
 	}	
+	
+	
 
 	public Cargo buscarOuFalhar(Long cargoId) {
 

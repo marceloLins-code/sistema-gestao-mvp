@@ -7,7 +7,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.lins.works.domain.entity.Cargo;
 import com.lins.works.domain.entity.Setor;
+import com.lins.works.domain.exception.CargoNaoEncontradaException;
 import com.lins.works.domain.exception.EntidadeEmUsoException;
 import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
 import com.lins.works.domain.exception.NegocioException;
@@ -28,7 +30,7 @@ public class SetorService {
 	
 	
 
-	public Setor novoSetor(Setor setor) {		
+	public Setor novoSetor(Setor setor) {
 		
 		boolean exist = setorRepository.existsByNome(setor.getNome());
 
@@ -73,8 +75,10 @@ public class SetorService {
 	
 	
 	public Setor buscarOuFalhar(Long setorId) {
+
 		return setorRepository.findById(setorId).orElseThrow(
-				() -> new SetorNaoEncontradaException(setorId));
+				() -> new SetorNaoEncontradaException	(setorId));
 	}
+
 
 }

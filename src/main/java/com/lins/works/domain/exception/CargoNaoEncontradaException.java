@@ -12,8 +12,8 @@ public class CargoNaoEncontradaException extends EntidadeNaoEncontradaException 
 		super(mensagem);
 	}
 	
-	public CargoNaoEncontradaException(Long setorId) {
-		this(String.format("Setor de id %d não encontrado ", setorId));
+	public CargoNaoEncontradaException(Long cargoId) {
+		this(String.format("Cargo de id %d não encontrado ", cargoId));
 	}
 
 }

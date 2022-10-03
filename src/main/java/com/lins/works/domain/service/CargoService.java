@@ -1,13 +1,15 @@
 package com.lins.works.domain.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.lins.works.domain.entity.Cargo;
 import com.lins.works.domain.entity.Setor;
+import com.lins.works.domain.exception.CargoNaoEncontradaException;
 import com.lins.works.domain.exception.EntidadeEmUsoException;
-import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
 import com.lins.works.domain.repository.CargoRepository;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +20,6 @@ public class CargoService {
 
 	private static final String CARGO_EM_USO = "Cargo de Id %d em uso, Não é possivel excluir";
 
-	private static final String MSG_CARGO_NAO_ENCONTRADO = "Cargo de id %d não encontrado ";
 
 	private CargoRepository cargoRepository;
 	
@@ -46,24 +47,26 @@ public class CargoService {
 	}
 
 	
-
+	@Transactional
 	public void remover(Long cargoId) {
 		try {
 			cargoRepository.deleteById(cargoId);
 
-		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(String.format(CARGO_EM_USO, cargoId));
-		}
+		} 
 
 		catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(String.format(MSG_CARGO_NAO_ENCONTRADO, cargoId));
+			throw new CargoNaoEncontradaException(cargoId);
 		}
-	}
+		catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException
+			(String.format(CARGO_EM_USO, cargoId));
+		}
+	}	
 
 	public Cargo buscarOuFalhar(Long cargoId) {
 
 		return cargoRepository.findById(cargoId).orElseThrow(
-				() -> new EntidadeNaoEncontradaException(String.format(MSG_CARGO_NAO_ENCONTRADO, cargoId)));
+				() -> new CargoNaoEncontradaException(cargoId));
 	}
 
 }

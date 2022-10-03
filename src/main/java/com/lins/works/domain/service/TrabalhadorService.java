@@ -44,7 +44,10 @@ public class TrabalhadorService {
 		if (exist == true) {
 			throw new RuntimeException("CPF já cadastrado");
 		}
-
+		
+		trabalhador.setSetor(trabalhador.getSetor());
+		trabalhador.setCargo(trabalhador.getCargo());
+		
 		return trabalhadorRepository.save(trabalhador);
 
 	}
@@ -60,7 +63,8 @@ public class TrabalhadorService {
 		}
 
 		catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(String.format(ID_DIGITADO_NÃO_EXISTE, trabalhadorId));
+			throw new NegocioException(e.getMessage());
+		
 		}
 	}
 
@@ -84,7 +88,7 @@ public class TrabalhadorService {
 
 	public Trabalhador buscarOuFalhar(Long trabalhadorId) {
 		return trabalhadorRepository.findById(trabalhadorId).orElseThrow(
-				() -> new EntidadeNaoEncontradaException(String.format(ID_DIGITADO_NÃO_EXISTE, trabalhadorId)));
+				() -> new NegocioException(String.format(ID_DIGITADO_NÃO_EXISTE, trabalhadorId)));
 	}
 
 }

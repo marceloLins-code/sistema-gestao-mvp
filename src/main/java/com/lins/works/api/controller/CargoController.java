@@ -1,12 +1,15 @@
 package com.lins.works.api.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +20,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lins.works.domain.entity.Cargo;
+import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
 import com.lins.works.domain.exception.NegocioException;
 import com.lins.works.domain.exception.SetorNaoEncontradaException;
 import com.lins.works.domain.repository.CargoRepository;
 import com.lins.works.domain.service.CargoService;
+import com.lins.works.global.exceptionHandler.Erro;
 
 import lombok.AllArgsConstructor;
 
@@ -52,7 +57,7 @@ public class CargoController {
 			return cargoService.novoCargo(cargo);
 
 		} catch (SetorNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage());
+			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 
@@ -74,8 +79,11 @@ public class CargoController {
 
 	@DeleteMapping("/{cargoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long cargoId) {
+	public void remover(@PathVariable Long cargoId) {		
+		
 		cargoService.remover(cargoId);
 	}
+
+	
 
 }

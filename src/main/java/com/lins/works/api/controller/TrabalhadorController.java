@@ -47,7 +47,7 @@ public class TrabalhadorController {
 			throw new NegocioException(e.getMessage());
 
 		} catch (CargoNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage());
+			throw new NegocioException(e.getMessage(),e);
 		}
 	}
 
@@ -66,7 +66,7 @@ public class TrabalhadorController {
 			return trabalhadorService.adicionarTrabalhador(trabalhadorAtual);
 
 		} catch (SetorNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage());
+			throw new NegocioException(e.getMessage(), e);
 		
 		
 	} catch (CargoNaoEncontradaException e) {

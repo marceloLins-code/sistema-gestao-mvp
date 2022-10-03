@@ -1,13 +1,11 @@
 package com.lins.works.domain.service;
 
-import javax.transaction.Transactional;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.lins.works.domain.entity.Cargo;
+import com.lins.works.domain.entity.Setor;
 import com.lins.works.domain.exception.EntidadeEmUsoException;
 import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
 import com.lins.works.domain.repository.CargoRepository;
@@ -20,35 +18,34 @@ public class CargoService {
 
 	private static final String CARGO_EM_USO = "Cargo de Id %d em uso, Não é possivel excluir";
 
-	private static final String MSG_CARGO_NAO_ENCONTRADO = "Cargo de id %d não encontrado";
+	private static final String MSG_CARGO_NAO_ENCONTRADO = "Cargo de id %d não encontrado ";
 
 	private CargoRepository cargoRepository;
+	
+	private SetorService setorService;
+	
+	
 
-	public Cargo novoCargo(Cargo cargo) {
-
+	public Cargo novoCargo(Cargo cargo) {	
+		
 		boolean existCargoNome = cargoRepository.existsByNome(cargo.getNome());
 
 		boolean existCargoSetor = cargoRepository.existsByNomeContainingAndSetorId(cargo.getNome(),
 				cargo.getSetor().getId());
 
 		if (existCargoNome == true && existCargoSetor == false) {
-
 			throw new RuntimeException("Cargo nâo correspode a este setor ou setor inexistente!");
-
 		}
+		
+		long setorId = cargo.getSetor().getId(); 		
+		Setor setor =setorService.buscarOuFalhar(setorId);	
+		
+		cargo.setSetor(setor);
 
 		return cargoRepository.save(cargo);
 	}
 
-	@Transactional
-	public Cargo atualizarCargo(Long cargoId, Cargo cargo) {
-
-		Cargo cargoAtual = buscarOuFalhar(cargoId);
-
-		BeanUtils.copyProperties(cargo, cargoAtual, "id");
-
-		return cargoRepository.save(cargoAtual);
-	}
+	
 
 	public void remover(Long cargoId) {
 		try {

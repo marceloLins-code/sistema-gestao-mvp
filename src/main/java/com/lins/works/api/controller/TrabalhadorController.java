@@ -34,6 +34,7 @@ public class TrabalhadorController {
 	}
 
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	public Trabalhador novoTrab(@RequestBody Trabalhador trabalhador) {
 		return trabalhadorService.adicionarTrabalhador(trabalhador);
 	}
@@ -46,7 +47,7 @@ public class TrabalhadorController {
 	@PutMapping("/{trabalhadorId}")
 	public Trabalhador atualizarTrabalhador(@PathVariable Long trabalhadorId, @RequestBody Trabalhador trabalhador) {
 
-		return trabalhadorService.novoTrabalhador(trabalhadorId, trabalhador);
+		return trabalhadorService.atualizarTrabalhador(trabalhadorId, trabalhador);
 	}
 
 	@DeleteMapping("/{trabalhadorId}")

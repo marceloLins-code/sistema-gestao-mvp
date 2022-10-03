@@ -36,11 +36,12 @@ public class SetorController {
 	}
 
 	@GetMapping("/{setorId}")
-	public Setor buscar(@PathVariable Long setorId) {
+	public Setor buscar(@PathVariable Long setorId) {	
 		return setorService.buscarOuFalhar(setorId);
 	}
 
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	public Setor adicionarSetor(@RequestBody @Valid Setor setor) {
 
 		setorRepository.existsByNome(setor.getNome());

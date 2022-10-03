@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.lins.works.domain.entity.Setor;
 import com.lins.works.domain.exception.EntidadeEmUsoException;
 import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
+import com.lins.works.domain.exception.NegocioException;
+import com.lins.works.domain.exception.SetorNaoEncontradaException;
 import com.lins.works.domain.repository.SetorRepository;
 
 import lombok.AllArgsConstructor;
@@ -19,17 +21,19 @@ import lombok.AllArgsConstructor;
 public class SetorService {
 
 	private static final String SETOR_EM_USO = "Setor de Id %d em uso, Não é possivel excluir";
-	private static final String MSG_SETOR_NAO_ENCONTRADO = "Setor de id %d não encontrado";
-	private SetorRepository setorRepository;
+	
 
-	public Setor novoSetor(Setor setor) {
-		
-		//buscarOuFalhar(setor.getId());
+	private SetorRepository setorRepository;
+	
+	
+	
+
+	public Setor novoSetor(Setor setor) {		
 		
 		boolean exist = setorRepository.existsByNome(setor.getNome());
 
 		if (exist == true) {
-			throw new RuntimeException("Setor já cadastrado");
+			throw new RuntimeException("Nome de Setor já Cadastrado");
 		}		
 
 		return setorRepository.save(setor);
@@ -43,8 +47,14 @@ public class SetorService {
 		Setor setorAtual = buscarOuFalhar(setorId); 
 
 		BeanUtils.copyProperties(setor, setorAtual, "id");
+		
+		try {
+			return setorRepository.save(setorAtual); 
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 
-		return setorRepository.save(setorAtual);
+		
 	}
 	
 
@@ -57,14 +67,14 @@ public class SetorService {
 		}
 
 		catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(String.format(MSG_SETOR_NAO_ENCONTRADO, setorId));
+			throw new SetorNaoEncontradaException(setorId);
 		}
 	}
 	
 	
 	public Setor buscarOuFalhar(Long setorId) {
 		return setorRepository.findById(setorId).orElseThrow(
-				() -> new EntidadeNaoEncontradaException(String.format(MSG_SETOR_NAO_ENCONTRADO, setorId)));
+				() -> new SetorNaoEncontradaException(setorId));
 	}
 
 }

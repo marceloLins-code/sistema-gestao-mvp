@@ -2,6 +2,7 @@ package com.lins.works.api.controller;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lins.works.domain.entity.Trabalhador;
+import com.lins.works.domain.exception.CargoNaoEncontradaException;
+import com.lins.works.domain.exception.NegocioException;
+import com.lins.works.domain.exception.SetorNaoEncontradaException;
 import com.lins.works.domain.repository.TrabalhadorRepository;
 import com.lins.works.domain.service.TrabalhadorService;
 
@@ -36,18 +40,40 @@ public class TrabalhadorController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Trabalhador novoTrab(@RequestBody Trabalhador trabalhador) {
-		return trabalhadorService.adicionarTrabalhador(trabalhador);
+		try {
+			return trabalhadorService.adicionarTrabalhador(trabalhador);
+
+		} catch (SetorNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+
+		} catch (CargoNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 	}
 
 	@GetMapping("/{trabalhadorId}")
 	public Trabalhador buscarId(@PathVariable Long trabalhadorId) {
 		return trabalhadorService.buscarOuFalhar(trabalhadorId);
 	}
-	
+
 	@PutMapping("/{trabalhadorId}")
 	public Trabalhador atualizarTrabalhador(@PathVariable Long trabalhadorId, @RequestBody Trabalhador trabalhador) {
+		try {
 
-		return trabalhadorService.atualizarTrabalhador(trabalhadorId, trabalhador);
+			Trabalhador trabalhadorAtual = trabalhadorService.buscarOuFalhar(trabalhadorId);
+
+			BeanUtils.copyProperties(trabalhador, trabalhadorAtual, "id");
+			return trabalhadorService.adicionarTrabalhador(trabalhadorAtual);
+
+		} catch (SetorNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		
+		
+	} catch (CargoNaoEncontradaException e) {
+		throw new NegocioException(e.getMessage());
+	}
+
+
 	}
 
 	@DeleteMapping("/{trabalhadorId}")

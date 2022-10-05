@@ -9,8 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,11 +22,12 @@ import lombok.NoArgsConstructor;
 public class Trabalhador implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-
+	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 		
+	@NotNull
 	private String nome;
 	
 	
@@ -38,10 +38,10 @@ public class Trabalhador implements Serializable {
 	@JoinColumn(name = "cargo_id")
 	private Cargo cargo;
 	
-	@JsonIgnore
+		
+	//@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "setor_id")
-	private Setor setor;
-	
+	@JoinColumn(name = "setor_id", nullable = false)
+	private Setor setor;	
 	
 }

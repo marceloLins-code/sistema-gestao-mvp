@@ -15,16 +15,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@NoArgsConstructor
 @Data
 @Entity
 public class Setor implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	
+	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -34,7 +32,11 @@ public class Setor implements Serializable {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "setor")
-	private List<Cargo> cargos = new ArrayList<>();
+	private List<Cargo> cargo = new ArrayList<>();
 	
-
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "setor")
+	private List<Trabalhador> trabalhador = new ArrayList<>();
+	
 }

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Cargo {	
 	
-	
+	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,13 +32,13 @@ public class Cargo {
 	@NotNull
 	private String nome;
 	
-
+	
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(name = "setor_id",nullable = false)
 	private Setor setor;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "setor")
+	@OneToMany(mappedBy = "cargo")
 	private List<Trabalhador> trabalhador = new ArrayList<>();
 	
 

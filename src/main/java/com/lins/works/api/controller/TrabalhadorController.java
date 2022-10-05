@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lins.works.domain.assembler.TrabalhadorModelAssembler;
 import com.lins.works.domain.entity.Trabalhador;
 import com.lins.works.domain.exception.CargoNaoEncontradaException;
 import com.lins.works.domain.exception.NegocioException;
 import com.lins.works.domain.exception.SetorNaoEncontradaException;
 import com.lins.works.domain.repository.TrabalhadorRepository;
 import com.lins.works.domain.service.TrabalhadorService;
+import com.lins.works.modelDTO.TrabalhadorModel;
 
 import lombok.AllArgsConstructor;
 
@@ -31,48 +33,51 @@ public class TrabalhadorController {
 	private TrabalhadorRepository trabalhadorRepository;
 
 	private TrabalhadorService trabalhadorService;
+	
+	private TrabalhadorModelAssembler trabalhadorModelAssembler;
 
 	@GetMapping
-	public List<Trabalhador> buscarTodos() {
-		return trabalhadorRepository.findAll();
+	public List<TrabalhadorModel> buscarTodos() {
+		return trabalhadorModelAssembler.toCollectionModel(trabalhadorRepository.findAll());
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Trabalhador novoTrab(@RequestBody Trabalhador trabalhador) {
+	public TrabalhadorModel novoTrab(@RequestBody Trabalhador trabalhador) {
 		try {
-			return trabalhadorService.adicionarTrabalhador(trabalhador);
+			return trabalhadorModelAssembler.toModel(trabalhadorService.adicionarTrabalhador(trabalhador));
 
 		} catch (SetorNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 
 		} catch (CargoNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage(),e);
+			throw new NegocioException(e.getMessage(), e);	
 		}
 	}
 
 	@GetMapping("/{trabalhadorId}")
-	public Trabalhador buscarId(@PathVariable Long trabalhadorId) {
-		return trabalhadorService.buscarOuFalhar(trabalhadorId);
+	public TrabalhadorModel buscarId(@PathVariable Long trabalhadorId) {
+
+		Trabalhador trabalhador = trabalhadorService.buscarOuFalhar(trabalhadorId);
+
+		return trabalhadorModelAssembler.toModel(trabalhador);
 	}
 
 	@PutMapping("/{trabalhadorId}")
-	public Trabalhador atualizarTrabalhador(@PathVariable Long trabalhadorId, @RequestBody Trabalhador trabalhador) {
+	public TrabalhadorModel atualizarTrabalhador(@PathVariable Long trabalhadorId, @RequestBody Trabalhador trabalhador) {
 		try {
 
 			Trabalhador trabalhadorAtual = trabalhadorService.buscarOuFalhar(trabalhadorId);
 
 			BeanUtils.copyProperties(trabalhador, trabalhadorAtual, "id");
-			return trabalhadorService.adicionarTrabalhador(trabalhadorAtual);
+			return trabalhadorModelAssembler.toModel(trabalhadorService.adicionarTrabalhador(trabalhadorAtual));
 
 		} catch (SetorNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
-		
-		
-	} catch (CargoNaoEncontradaException e) {
-		throw new NegocioException(e.getMessage());
-	}
 
+		} catch (CargoNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 
 	}
 
@@ -82,4 +87,5 @@ public class TrabalhadorController {
 		trabalhadorService.remover(trabalhadorId);
 	}
 
+	
 }

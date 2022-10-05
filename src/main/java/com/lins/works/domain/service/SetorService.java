@@ -7,9 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.lins.works.domain.entity.Cargo;
 import com.lins.works.domain.entity.Setor;
-import com.lins.works.domain.exception.CargoNaoEncontradaException;
 import com.lins.works.domain.exception.EntidadeEmUsoException;
 import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
 import com.lins.works.domain.exception.NegocioException;

@@ -36,6 +36,7 @@ public class SetorController {
 	}
 
 	@GetMapping("/{setorId}")
+	@ResponseStatus(HttpStatus.OK)
 	public Setor buscar(@PathVariable Long setorId) {	
 		return setorService.buscarOuFalhar(setorId);
 	}

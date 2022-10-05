@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.lins.works.domain.entity.Cargo;
+import com.lins.works.domain.entity.Setor;
 import com.lins.works.domain.entity.Trabalhador;
 import com.lins.works.domain.exception.EntidadeEmUsoException;
 import com.lins.works.domain.exception.EntidadeNaoEncontradaException;
@@ -28,6 +29,8 @@ public class TrabalhadorService {
 
 	private CargoService cargoService;
 	
+	private SetorService setorSevice;
+	
 	
 	
 	
@@ -38,6 +41,12 @@ public class TrabalhadorService {
 
 		Cargo cargo = cargoService.buscarOuFalhar(cargoId);
 
+
+		Long setorId = trabalhador.getSetor().getId();
+
+		Setor setor = setorSevice.buscarOuFalhar(setorId);
+
+		
 		boolean exist = trabalhadorRepository.existsByCpf(trabalhador.getCpf());
 
 		if (exist == true) {
@@ -45,6 +54,8 @@ public class TrabalhadorService {
 		}
 		
 		trabalhador.setCargo(cargo);
+		trabalhador.setSetor(setor);
+		
 		
 		return trabalhadorRepository.save(trabalhador);
 

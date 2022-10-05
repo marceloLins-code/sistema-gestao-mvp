@@ -39,6 +39,7 @@ public class CargoController {
 	}
 
 	@GetMapping("/{cargoId}")
+	@ResponseStatus(HttpStatus.OK)
 	public Cargo buscar(@PathVariable Long cargoId) {
 		return cargoService.buscarOuFalhar(cargoId);
 	}
@@ -56,6 +57,7 @@ public class CargoController {
 		}
 	}
 
+	
 	@PutMapping("/{cargoId}")
 	public Cargo atualizar(@PathVariable Long cargoId, @RequestBody Cargo cargo) {
 

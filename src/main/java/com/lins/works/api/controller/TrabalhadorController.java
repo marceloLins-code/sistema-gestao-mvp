@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lins.works.domain.assembler.TrabalhadorModelAssembler;
+import com.lins.works.domain.assembler.TrabalhadorAssemblerModel;
 import com.lins.works.domain.entity.Trabalhador;
 import com.lins.works.domain.exception.CargoNaoEncontradaException;
 import com.lins.works.domain.exception.NegocioException;
@@ -33,25 +33,25 @@ public class TrabalhadorController {
 	private TrabalhadorRepository trabalhadorRepository;
 
 	private TrabalhadorService trabalhadorService;
-	
-	private TrabalhadorModelAssembler trabalhadorModelAssembler;
+
+	private TrabalhadorAssemblerModel trabalhadorAssemblerModel;
 
 	@GetMapping
 	public List<TrabalhadorModel> buscarTodos() {
-		return trabalhadorModelAssembler.toCollectionModel(trabalhadorRepository.findAll());
+		return trabalhadorAssemblerModel.toCollectionModelo(trabalhadorRepository.findAll());
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public TrabalhadorModel novoTrab(@RequestBody Trabalhador trabalhador) {
 		try {
-			return trabalhadorModelAssembler.toModel(trabalhadorService.adicionarTrabalhador(trabalhador));
+			return trabalhadorAssemblerModel.toModel(trabalhadorService.adicionarTrabalhador(trabalhador));
 
 		} catch (SetorNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 
 		} catch (CargoNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage(), e);	
+			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 
@@ -59,18 +59,19 @@ public class TrabalhadorController {
 	public TrabalhadorModel buscarId(@PathVariable Long trabalhadorId) {
 
 		Trabalhador trabalhador = trabalhadorService.buscarOuFalhar(trabalhadorId);
-
-		return trabalhadorModelAssembler.toModel(trabalhador);
+		
+		return trabalhadorAssemblerModel.toModel(trabalhador);
 	}
 
 	@PutMapping("/{trabalhadorId}")
-	public TrabalhadorModel atualizarTrabalhador(@PathVariable Long trabalhadorId, @RequestBody Trabalhador trabalhador) {
+	public TrabalhadorModel atualizarTrabalhador(@PathVariable Long trabalhadorId,
+			@RequestBody Trabalhador trabalhador) {
 		try {
 
 			Trabalhador trabalhadorAtual = trabalhadorService.buscarOuFalhar(trabalhadorId);
 
 			BeanUtils.copyProperties(trabalhador, trabalhadorAtual, "id");
-			return trabalhadorModelAssembler.toModel(trabalhadorService.adicionarTrabalhador(trabalhadorAtual));
+			return trabalhadorAssemblerModel.toModel(trabalhadorService.adicionarTrabalhador(trabalhadorAtual));
 
 		} catch (SetorNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);

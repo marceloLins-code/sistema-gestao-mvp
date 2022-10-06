@@ -7,13 +7,10 @@ import lombok.Setter;
 @Setter
 public class TrabalhadorModel {
 	
-	private Long id;
-	
 	private String nome;
 	
-	private String setor;
+	private SetorModel setor;
 	
-	private String cargo;
-	
+	private CargoModel cargo;	
 
 }

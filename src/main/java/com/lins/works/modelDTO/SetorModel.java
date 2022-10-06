@@ -1,13 +1,12 @@
 package com.lins.works.modelDTO;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class SetorModel {
 	
 	private String nome;
 	
-	private TrabalhadorModel trabalhadorModel;
-	
-
 }

@@ -9,7 +9,4 @@ public class CargoModel {
 	
 	private String nome;
 	
-	private SetorModel setorModel;
-	
-
 }
